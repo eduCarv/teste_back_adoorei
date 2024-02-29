@@ -2,11 +2,11 @@
 
 namespace Database\Seeders;
 
-use App\Models\Celular;
+use App\Models\Produtos;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class CelularesTableSeeder extends Seeder
+class ProdutosTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -15,7 +15,7 @@ class CelularesTableSeeder extends Seeder
      */
     public function run()
     {
-        $celulares = [
+        $produtos = [
             [
                 "name" => "IPHONE XYZ",
                 "price" => 1800,
@@ -33,8 +33,8 @@ class CelularesTableSeeder extends Seeder
             ]
         ];
         
-        foreach ($celulares as $celular) {
-            Celular::create($celular);
+        foreach ($produtos as $produto) {
+            Produtos::create($produto);
         }
     }
 }
