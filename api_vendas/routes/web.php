@@ -22,7 +22,7 @@ Route::get('/listar-produtos', [ProdutoController::class, 'listarProdutos']);
 Route::post('/cadastrar-venda', [VendasController::class, 'cadastrarVenda']);
 Route::get('/consultar-vendas', [VendasController::class, 'consultarVendas']);
 Route::get('/consultar-venda/{saleId}', [VendasController::class, 'consultarVenda']);
-Route::put('/cancelar-venda/{saleId}', [VendasController::class, 'cancelarVenda']);
+Route::get('/cancelar-venda/{saleId}', [VendasController::class, 'cancelarVenda']);
 
 
 Route::get('/', function () {

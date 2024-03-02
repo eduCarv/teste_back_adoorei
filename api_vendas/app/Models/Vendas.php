@@ -10,6 +10,7 @@ class Vendas extends Model
     use HasFactory;
 
     protected $table = 'vendas';    
+    protected $primaryKey = 'sale_id';
 
     protected $fillable = [
         'sale_id',

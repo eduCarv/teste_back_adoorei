@@ -103,20 +103,24 @@ class VendasController extends Controller
 
     public function cancelarVenda($saleId)
     {
-        $venda = Vendas::find($saleId);
+        $venda = Vendas::where('sale_id', $saleId)->first();
 
         if (!$venda) {
             return response()->json(['message' => 'Venda não encontrada'], 404);
         }
-
-        // Verifica se a venda já está cancelada
+        
         if ($venda->status === 'C') {
             return response()->json(['message' => 'A venda já está cancelada'], 422);
         }
+    
+        if ($venda->status !== 'C') {
+            $venda->status = 'C';
+            $venda->save();
+            return response()->json(['message' => 'Venda cancelada com sucesso'], 200);   
+        }
 
-        // Atualiza o status para 'C' (cancelado)
-        $venda->update(['status' => 'C']);
-
-        return response()->json(['message' => 'Venda cancelada com sucesso'], 200);   
+        return response()->json(['message' => 'Algo deu errado'], 200);   
     }
+
+
 }
