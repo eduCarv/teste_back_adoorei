@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProdutoController;
+use App\Http\Controllers\VendasController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,7 +15,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+//Rota Produto
 Route::get('/listarProdutos', [ProdutoController::class, 'listarProdutos']);
+
+//Rotas Vendas
+Route::post('/cadastrarVenda', [VendasController::class, 'cadastrarVenda']);
+
 
 Route::get('/', function () {
     return view('welcome');
