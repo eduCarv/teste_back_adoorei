@@ -2,7 +2,7 @@
 
 API_Rest feita para o teste de back end da Adoorei.
 
-O que utilize para fazer:
+O que utilizei para fazer:
 
 * PHP (Laravel)
 * MYSQL
