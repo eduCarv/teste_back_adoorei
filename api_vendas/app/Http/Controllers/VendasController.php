@@ -16,11 +16,11 @@ class VendasController extends Controller
 
         $novaVenda = Vendas::create([
             'amount' => $request->input('amount'),
-        ]);
+        ]);        
 
         foreach ($request->input('products') as $produto) {
             VendaProdutos::create([
-                'sale_id' => $novaVenda->id,
+                'sale_id' => $novaVenda->sale_id,
                 'product_id' => $produto['product_id'],
                 'name' => $produto['name'],
                 'price' => $produto['price'],
@@ -121,6 +121,44 @@ class VendasController extends Controller
 
         return response()->json(['message' => 'Algo deu errado'], 200);   
     }
+
+    public function cadastrarProdutoVenda(Request $request, $saleId)
+    {        
+        $venda = Vendas::where('sale_id', $saleId)->first();
+
+        if (!$venda) {
+            return response()->json(['message' => 'Venda não encontrada'], 404);
+        }
+        
+        if ($venda->status !== 'A') {
+            return response()->json(['message' => 'Não é possível adicionar produtos a uma venda com status diferente de "Aberta"'], 422);
+        }
+
+        $request->validate([
+            'products' => 'required|array',
+            'products.*.product_id' => 'required|exists:produtos,product_id',
+            'products.*.name' => 'required|string',
+            'products.*.price' => 'required|numeric',
+            'products.*.amount' => 'required|integer|min:1',
+        ]);
+
+        foreach ($request->input('products') as $produto) {            
+            VendaProdutos::create([
+                'sale_id' => $venda->sale_id,
+                'product_id' => $produto['product_id'],
+                'name' => $produto['name'],
+                'price' => $produto['price'],
+                'amount' => $produto['amount'],
+            ]);
+            
+            $venda->amount += ($produto['amount'] * $produto['price']);
+        }
+        
+        $venda->save();
+
+        return response()->json(['message' => 'Produtos adicionados à venda com sucesso'], 201);
+    }
+
 
 
 }

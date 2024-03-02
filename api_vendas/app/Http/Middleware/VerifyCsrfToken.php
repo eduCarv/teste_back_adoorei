@@ -11,10 +11,6 @@ class VerifyCsrfToken extends Middleware
      *
      * @var array<int, string>
      */
-
-     //Adicionando exceções a verificação do token csrf para fins de agilidade (ja que eh um teste e nao um api de produçao);
-    protected $except = [
-        '/cadastrarVenda',
-        '/consultarVendas',
-    ];
+     
+    protected $except = [];
 }
