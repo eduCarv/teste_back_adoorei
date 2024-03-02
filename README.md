@@ -24,3 +24,9 @@ As requisições podem ser acessadas importando o arquivo json neste projeto par
 Cada requisição conta com uma pequena descrição de como funciona e o que precisa ser passado para funcionar.
 
 Neste projeto não foi utilizado autenticação de nenhum tipo, a fim de agilizar o desenvolvimento, entretanto é possível usá-lo como modelo para futuras implementações.
+
+# Testes unitários para checar se as colunas das respectivas tabelas estão OK
+
+* Produtos
+* Vendas
+* Venda Produtos

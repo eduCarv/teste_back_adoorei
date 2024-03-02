@@ -16,5 +16,6 @@ class Vendas extends Model
         'sale_id',
         'amount',
         'products',
+        'status',
     ];
 }
