@@ -20,6 +20,7 @@ Route::get('/listarProdutos', [ProdutoController::class, 'listarProdutos']);
 
 //Rotas Vendas
 Route::post('/cadastrarVenda', [VendasController::class, 'cadastrarVenda']);
+Route::get('/consultarVendas', [VendasController::class, 'consultarVendas']);
 
 
 Route::get('/', function () {

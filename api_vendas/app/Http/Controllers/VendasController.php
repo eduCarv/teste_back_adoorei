@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\VendaProdutos;
 use App\Models\Vendas;
+use Illuminate\Support\Facades\DB;
 
 class VendasController extends Controller
 {
@@ -28,5 +29,43 @@ class VendasController extends Controller
         }        
 
         return response()->json(['message' => 'Venda cadastrada com sucesso'], 201);
+    }
+
+    public function consultarVendas(Request $request)
+    {
+        $vendas = DB::table('vendas')
+            ->leftJoin('venda_produtos', 'vendas.sale_id', '=', 'venda_produtos.sale_id')
+            ->select('vendas.sale_id', 'vendas.amount', 'venda_produtos.product_id', 'venda_produtos.name as nome', 'venda_produtos.price', 'venda_produtos.amount as quantidade')
+            ->get();
+    
+        $vendasFormatadas = [];
+    
+        foreach ($vendas as $venda) {
+            $index = array_search($venda->sale_id, array_column($vendasFormatadas, 'sale_id'));
+    
+            if ($index === false) {
+                $vendasFormatadas[] = [
+                    'sale_id' => $venda->sale_id,
+                    'amount' => $venda->amount,
+                    'products' => [
+                        [
+                            'product_id' => $venda->product_id,
+                            'nome' => $venda->nome,
+                            'price' => $venda->price,
+                            'amount' => $venda->quantidade,
+                        ],
+                    ],
+                ];
+            } else {
+                $vendasFormatadas[$index]['products'][] = [
+                    'product_id' => $venda->product_id,
+                    'nome' => $venda->nome,
+                    'price' => $venda->price,
+                    'amount' => $venda->quantidade,
+                ];
+            }
+        }
+    
+        return response()->json(['vendas' => $vendasFormatadas], 200);
     }
 }
