@@ -35,7 +35,7 @@ class VendasController extends Controller
     {
         $vendas = DB::table('vendas')
             ->leftJoin('venda_produtos', 'vendas.sale_id', '=', 'venda_produtos.sale_id')
-            ->select('vendas.sale_id', 'vendas.amount', 'venda_produtos.product_id', 'venda_produtos.name as nome', 'venda_produtos.price', 'venda_produtos.amount as quantidade')
+            ->select('vendas.sale_id', 'vendas.amount', 'vendas.status', 'venda_produtos.product_id', 'venda_produtos.name as nome', 'venda_produtos.price', 'venda_produtos.amount as quantidade')
             ->get();
 
         $vendasFormatadas = [];
@@ -47,6 +47,7 @@ class VendasController extends Controller
                 $vendasFormatadas[] = [
                     'sale_id' => $venda->sale_id,
                     'amount' => $venda->amount,
+                    'status' => $venda->status,
                     'products' => [
                         [
                             'product_id' => $venda->product_id,
@@ -74,7 +75,7 @@ class VendasController extends Controller
         $venda = DB::table('vendas')
             ->leftJoin('venda_produtos', 'vendas.sale_id', '=', 'venda_produtos.sale_id')
             ->where('vendas.sale_id', $saleId)
-            ->select('vendas.sale_id', 'vendas.amount', 'venda_produtos.product_id', 'venda_produtos.name as nome', 'venda_produtos.price', 'venda_produtos.amount as quantidade')
+            ->select('vendas.sale_id', 'vendas.amount', 'vendas.status', 'venda_produtos.product_id', 'venda_produtos.name as nome', 'venda_produtos.price', 'venda_produtos.amount as quantidade')
             ->get();
 
         if ($venda->isEmpty()) {
@@ -84,6 +85,7 @@ class VendasController extends Controller
         $vendaFormatada = [
             'sale_id' => $venda[0]->sale_id,
             'amount' => $venda[0]->amount,
+            'status' => $venda[0]->status,
             'products' => [],
         ];
 
@@ -99,8 +101,22 @@ class VendasController extends Controller
         return response()->json(['venda' => $vendaFormatada], 200);
     }
 
-    public function cancelarVenda()
+    public function cancelarVenda($saleId)
     {
-        
+        $venda = Vendas::find($saleId);
+
+        if (!$venda) {
+            return response()->json(['message' => 'Venda não encontrada'], 404);
+        }
+
+        // Verifica se a venda já está cancelada
+        if ($venda->status === 'C') {
+            return response()->json(['message' => 'A venda já está cancelada'], 422);
+        }
+
+        // Atualiza o status para 'C' (cancelado)
+        $venda->update(['status' => 'C']);
+
+        return response()->json(['message' => 'Venda cancelada com sucesso'], 200);   
     }
 }
