@@ -100,4 +100,7 @@ class VendasController extends Controller
     }
 
     public function cancelarVenda()
+    {
+        
+    }
 }
