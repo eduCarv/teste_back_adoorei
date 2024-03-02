@@ -10,10 +10,10 @@ use Illuminate\Support\Facades\DB;
 class VendasController extends Controller
 {
     public function cadastrarVenda(Request $request)
-    {               
+    {
         //Assumindo que o front já calculou o total da venda tenho o amount para inserir no cadastro da venda
         //se nao tivesse, bastava um foreach antes no produtcs para pegar e adicionar ali.
-                
+
         $novaVenda = Vendas::create([
             'amount' => $request->input('amount'),
         ]);
@@ -26,7 +26,7 @@ class VendasController extends Controller
                 'price' => $produto['price'],
                 'amount' => $produto['amount'],
             ]);
-        }        
+        }
 
         return response()->json(['message' => 'Venda cadastrada com sucesso'], 201);
     }
@@ -37,12 +37,12 @@ class VendasController extends Controller
             ->leftJoin('venda_produtos', 'vendas.sale_id', '=', 'venda_produtos.sale_id')
             ->select('vendas.sale_id', 'vendas.amount', 'venda_produtos.product_id', 'venda_produtos.name as nome', 'venda_produtos.price', 'venda_produtos.amount as quantidade')
             ->get();
-    
+
         $vendasFormatadas = [];
-    
+
         foreach ($vendas as $venda) {
             $index = array_search($venda->sale_id, array_column($vendasFormatadas, 'sale_id'));
-    
+
             if ($index === false) {
                 $vendasFormatadas[] = [
                     'sale_id' => $venda->sale_id,
@@ -65,7 +65,39 @@ class VendasController extends Controller
                 ];
             }
         }
-    
+
         return response()->json(['vendas' => $vendasFormatadas], 200);
     }
+
+    public function consultarVenda($saleId)
+    {
+        $venda = DB::table('vendas')
+            ->leftJoin('venda_produtos', 'vendas.sale_id', '=', 'venda_produtos.sale_id')
+            ->where('vendas.sale_id', $saleId)
+            ->select('vendas.sale_id', 'vendas.amount', 'venda_produtos.product_id', 'venda_produtos.name as nome', 'venda_produtos.price', 'venda_produtos.amount as quantidade')
+            ->get();
+
+        if ($venda->isEmpty()) {
+            return response()->json(['message' => 'Venda não encontrada'], 404);
+        }
+
+        $vendaFormatada = [
+            'sale_id' => $venda[0]->sale_id,
+            'amount' => $venda[0]->amount,
+            'products' => [],
+        ];
+
+        foreach ($venda as $item) {
+            $vendaFormatada['products'][] = [
+                'product_id' => $item->product_id,
+                'nome' => $item->nome,
+                'price' => $item->price,
+                'amount' => $item->quantidade,
+            ];
+        }
+
+        return response()->json(['venda' => $vendaFormatada], 200);
+    }
+
+    public function cancelarVenda()
 }

@@ -16,11 +16,12 @@ use Illuminate\Support\Facades\Route;
 */
 
 //Rota Produto
-Route::get('/listarProdutos', [ProdutoController::class, 'listarProdutos']);
+Route::get('/listar-produtos', [ProdutoController::class, 'listarProdutos']);
 
 //Rotas Vendas
-Route::post('/cadastrarVenda', [VendasController::class, 'cadastrarVenda']);
-Route::get('/consultarVendas', [VendasController::class, 'consultarVendas']);
+Route::post('/cadastrar-venda', [VendasController::class, 'cadastrarVenda']);
+Route::get('/consultar-vendas', [VendasController::class, 'consultarVendas']);
+Route::get('/consultar-venda/{saleId}', [VendasController::class, 'consultarVenda']);
 
 
 Route::get('/', function () {
